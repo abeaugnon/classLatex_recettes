@@ -1,0 +1,155 @@
+% Copyright (C) 2014 Anael Bonneton
+%       anael.bonneton@gmail.com 
+% This program is free software: you can redistribute it and/or modify
+% it under the terms of the GNU General Public License as published by
+% the Free Software Foundation, either version 3 of the License, or
+% (at your option) any later version.
+% 
+% This program is distributed in the hope that it will be useful,
+% but WITHOUT ANY WARRANTY; without even the implied warranty of
+% MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+% GNU General Public License for more details.
+% 
+% You should have received a copy of the GNU General Public License
+% along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{outils}[20/01/2014]
+
+%% Commande permettant d'inclure une image ou un schéma
+%% dans un texte centré verticalement
+\newcommand{\vcenteredinclude}[1]{
+\begingroup
+\setbox0=\hbox{#1}
+\parbox{\wd0}{\box0}
+\endgroup} 
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% Environnements pour les ingrédients, les instructions de la préparation,
+%% les conseils et les variantes
+\DeclareDocumentEnvironment{partie}{ m }
+{\section*{\color{NavyBlue} #1}}
+{} 
+
+\DeclareDocumentEnvironment{Ingr} {}
+{\begin{partie}{Ingr\'edients}}
+{\end{partie}}
+
+\DeclareDocumentEnvironment{Prep} {}
+{\begin{partie}{Pr\'eparation}}
+{\end{partie}}
+
+\DeclareDocumentEnvironment{Conseils} {}
+{
+ \subsection*{\color{NavyBlue} Conseils}
+ \begin{itshape}
+}
+{
+ \end{itshape}
+}
+
+\DeclareDocumentEnvironment{Variantes} {}
+{
+ \subsection*{\color{NavyBlue} Variantes}
+ \begin{itshape}
+}
+{
+ \end{itshape}
+}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% Redéfinition de la commande affichant le titre
+%% Affiche le titre de la recette avec des informations supplémentaires
+%% lorsqu'elles sont fournies (nombre de personnes, temps de réfrigération,
+%%      temps de cuisson, temps de préparation, température)
+\renewcommand{\maketitle}{
+\thispagestyle{empty}
+%% Affichage du titre de la recette
+\begin{center}
+	\begin{Huge}
+	\begin{bfseries}
+		\color{MidnightBlue} \@titre \par
+	\end{bfseries}
+	\end{Huge}
+	\vspace{0.5cm}
+%% Affichage des informations (nombre de personnes, temps de cuisson,
+%%      temps de réfrigération, temps de préparation, température)
+\if\@nbPers 
+	\relax
+\else
+	\vcenteredinclude{\couverts}
+	\textrm{\@nbPers} ~~~~
+\fi
+\if\@tpsPrep 
+	\relax
+\else
+	\vcenteredinclude{\horloge}
+	\textrm{\@tpsPrep} ~~~~
+\fi
+\if\@tpsRef 
+	\relax
+\else
+	\vcenteredinclude{\flocon}
+	\textrm{\@tpsRef} ~~~~
+\fi
+\if\@tpsCuiss 
+	\relax
+\else
+	\vcenteredinclude{\four}
+	\textrm{\@tpsCuiss} ~~~~
+\fi
+\if\@temp 
+	\relax
+\else
+	\vcenteredinclude{\thermometre}
+	\textrm{\@temp}
+\fi
+	\vspace{0.8cm}
+\end{center}
+}
+
+%% Commande permettant d'afficher le corps du document
+%% les ingédients, les instructions pour la préparation, 
+%%  les conseils et les variantes
+\newcommand{\corps}{
+\begin{flushleft}
+\begin{minipage}[t]{.30\linewidth}
+% A gauche, une colonne pour les ingrédients
+		\if\@ingr
+			\relax
+		\else
+			\begin{Ingr}
+				\@ingr \par
+			\end{Ingr}
+		\fi
+\end{minipage}%
+\hfill%
+\begin{minipage}[t]{.65\linewidth}
+% A droite, une colonne pour la préparation et les conseils
+	\if\@prep
+		\relax
+	\else
+		\begin{Prep}
+			\@prep \par
+		\end{Prep}
+	\fi
+	
+	\if\@conseils
+		\relax
+	\else
+	  \vspace{0.5cm}
+		\begin{Conseils}
+			\@conseils \par
+		\end{Conseils}
+	\fi
+	
+        \if\@variantes
+		\relax
+	\else
+	  \vspace{0.5cm}
+		\begin{Variantes}
+			\@variantes \par
+		\end{Variantes}
+	\fi
+\end{minipage}
+\end{flushleft}}
